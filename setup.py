@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="codepulse",
-    version="1.0.1",
+    version="1.0.2",
     author="Aman Kumar Raj",
     author_email="ar837232342@gmail.com",
     description="Measure execution time for each line of a function.",

@@ -27,7 +27,7 @@ def modify_function(function_object):
     source_code = source_code.split("\n")
     prefix = source_code[0]  # def func1():
 
-    variables = ["time.time()"]
+    variables = ["time.perf_counter()"]
     variables1 = []
     body = source_code[1:]
     modified_body = []
@@ -94,7 +94,7 @@ def modify_function(function_object):
             # previously it was in skip not now
             skip_indent = None
 
-        s = f"{' '*indent}time_watcher_{i} = time.time()"
+        s = f"{' '*indent}time_watcher_{i} = time.perf_counter()"
         s1 = f"{' '*indent}max_watcher_{i} = max(max_watcher_{i}, 0.0 if {variables[-1]} is None else time_watcher_{i} - {variables[-1]})"
 
         variables.append(f"time_watcher_{i}")
@@ -117,7 +117,7 @@ def modify_function(function_object):
     if initial_indent is None:
         initial_indent = 0
     # we will not enter here if function has return call, if not then we enter here
-    pre_suffix = f"{' '*initial_indent}time_watcher_{i+1} = time.time()"
+    pre_suffix = f"{' '*initial_indent}time_watcher_{i+1} = time.perf_counter()"
     s1 = f"{' '*initial_indent}max_watcher_{i+1} = max(max_watcher_{i+1}, 0.0 if {variables[-1]} is None else time_watcher_{i+1} - {variables[-1]})"  # {0 if variables[-1] is 'None' else f'time_watcher_{i+1} - {variables[-1]}'})"
     variables.append(f"time_watcher_{i+1}")
     variables1.append(f"max_watcher_{i+1}")
