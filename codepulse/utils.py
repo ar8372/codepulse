@@ -35,6 +35,7 @@ def modify_function(function_object):
     initial_indent = None
     prev_indent = None
     skip_indent = None
+    consumed = None # prevents getting one indentation being empty completely
 
     # clean body
     temp_body = []
@@ -44,18 +45,33 @@ def modify_function(function_object):
         if prev_indent is None:
             prev_indent = indent
 
-        if l_strip == "" or any(l_strip.startswith(p) for p in ["#", "print("]):
+        if l_strip == "" or any(l_strip.startswith(p) for p in ["#"]):
             # don't include intentation value or anything from here completely ignore
             continue
+        if initial_indent is None:
+            # any execution coming here means it is not # or just empty line. It can be print
+            initial_indent = indent
+        if indent > prev_indent:
+            # entering for loop 
+            consumed = False
+        if any(l_strip.startswith(p) for p in ["print("]):
+            # don't include intentation value or anything from here completely ignore
+            if prev_indent > indent and not consumed:
+                # so case where for loop had only print statements
+                temp_body += [f"{' '*prev_indent}#placeholder"]
+            prev_indent = indent
+            continue
         if prev_indent is not None and prev_indent > indent:
-            # we came out of the loop
+            # we came out of the loop: this puts placeholder after the last line in inner for/while etc loop
             temp_body += [f"{' '*prev_indent}#placeholder"]
-
-        temp_body += [b]
         prev_indent = indent
+        temp_body += [b]
+        consumed = True
+    if prev_indent is not None and initial_indent is not None and initial_indent != prev_indent:
+        temp_body += [f"{' '*initial_indent}#placeholder"]
+
     body = temp_body.copy()
     prev_indent = None
-
     for i, b in enumerate(body):
         l_strip = b.lstrip()
         indent = len(b) - len(b.lstrip())

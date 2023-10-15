@@ -5,9 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="codepulse",
-    version="0.1.0",
-    author="codepulse",
-    author_email="codepulsedevelopers@gmail.com",
+    version="1.0.1",
+    author="Aman Kumar Raj",
+    author_email="ar837232342@gmail.com",
     description="Measure execution time for each line of a function.",
     long_description=long_description,
     long_description_content_type="text/markdown",
